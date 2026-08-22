@@ -1,0 +1,30 @@
+{
+  "lugares": [
+    {
+      "id": 1,
+      "nombre": "Costanera de Riberalta",
+      "descripcion": "Hermosa vista al encuentro de los ríos Beni y Madre de Dios.",
+      "imagen": "https://via.placeholder.com/300"
+    },
+    {
+      "id": 2,
+      "nombre": "Plaza Principal 3 de Febrero",
+      "descripcion": "El corazón de la ciudad, rodeado de vegetación y vida local.",
+      "imagen": "https://via.placeholder.com/300"
+    }
+  ],
+  "hoteles": [
+    {
+      "id": 1,
+      "nombre": "Hotel Las Palmas",
+      "descripcion": "Habitaciones confortables con piscina y aire acondicionado.",
+      "imagen": "https://via.placeholder.com/300"
+    },
+    {
+      "id": 2,
+      "nombre": "Hostal El Amazónico",
+      "descripcion": "Alojamiento céntrico y económico con excelente atención.",
+      "imagen": "https://via.placeholder.com/300"
+    }
+  ]
+}
