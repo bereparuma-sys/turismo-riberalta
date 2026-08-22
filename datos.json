@@ -2,33 +2,89 @@
   "lugares": [
     {
       "id": 1,
-      "nombre": "Costanera de Riberalta",
-      "descripcion": "Hermosa vista al encuentro de los ríos Beni y Madre de Dios.",
+      "nombre": "Balneario Laguna y Arroyo El Prado",
+      "descripcion": "Lugar ideal para reflexionar, nadar y compartir en familia.",
+      "precio_entrada": 0,
+      "imagen_url": "img/hoteles/prado_1.jpeg"
+    },
+    {
+      "id": 2,
+      "nombre": "Bambú Selva",
+      "descripcion": "Refugio ecológico que ofrece contacto directo con la naturaleza.",
+      "precio_entrada": 0,
+      "imagen_url": "img/hoteles/bambu_1.jpeg"
+    },
+    {
+      "id": 3,
+      "nombre": "Mirador La Costanera y Confluencia de Ríos",
+      "descripcion": "Una vista única del encuentro de los ríos Beni y Madre de Dios.",
       "precio_entrada": 0,
       "imagen_url": "img/hoteles/costanera_1.jpeg"
     },
     {
-      "id": 2,
-      "nombre": "Plaza Principal 3 de Febrero",
-      "descripcion": "El corazón de la ciudad, rodeado de vegetación y vida local.",
+      "id": 4,
+      "nombre": "Plaza Principal y Catedral Nuestra Señora del Carmen",
+      "descripcion": "El centro vivo de Riberalta, rodeado de áreas verdes y arquitectura.",
       "precio_entrada": 0,
       "imagen_url": "img/hoteles/plaza_1.jpeg"
+    },
+    {
+      "id": 5,
+      "nombre": "Cabañas Ecológicas Tumichucua",
+      "descripcion": "Cabañas ecológicas frente a la laguna, lugar de descanso y gastronomía.",
+      "precio_entrada": 0,
+      "imagen_url": "img/hoteles/tumichucua_1.jpg"
+    },
+    {
+      "id": 6,
+      "nombre": "Parque Ecológico Esmeralda",
+      "descripcion": "Espacio natural dedicado a la conservación y al disfrute de los visitantes.",
+      "precio_entrada": 0,
+      "imagen_url": "img/hoteles/esmeralda_1.jpeg"
     }
   ],
   "hoteles": [
     {
       "id": 1,
-      "nombre": "Hotel Las Palmas",
-      "descripcion": "Habitaciones confortables con piscina y aire acondicionado.",
+      "nombre": "Hotel Cristian",
+      "descripcion": "Ubicación: Riberalta, Beni, Bolivia.",
       "precio_noche": 150,
-      "imagen_url": "img/hoteles/bambu_1.jpeg"
+      "imagen_url": "img/hoteles/cristian_1.jpeg"
     },
     {
       "id": 2,
-      "nombre": "Hostal El Amazónico",
-      "descripcion": "Alojamiento céntrico y económico con excelente atención.",
-      "precio_noche": 80,
+      "nombre": "Hotel Perla Amazónica",
+      "descripcion": "Ubicación: Av. Plácido Castro.",
+      "precio_noche": 120,
+      "imagen_url": "img/hoteles/perla_1.jpeg"
+    },
+    {
+      "id": 3,
+      "nombre": "Hotel Jomali",
+      "descripcion": "Ubicación: Av. Nicolás Suárez.",
+      "precio_noche": 100,
+      "imagen_url": "img/hoteles/jomali_1.jpeg"
+    },
+    {
+      "id": 4,
+      "nombre": "Hotel Colonial",
+      "descripcion": "Alojamiento cómodo y céntrico.",
+      "precio_noche": 90,
       "imagen_url": "img/hoteles/colonial_1.jpeg"
+    },
+    {
+      "id": 5,
+      "nombre": "Hotel Boutique Avenida",
+      "descripcion": "Excelencia y comodidad en el centro.",
+      "precio_noche": 140,
+      "imagen_url": "img/hoteles/avenida_1.jpeg"
+    },
+    {
+      "id": 6,
+      "nombre": "Hotel Oasis Riberalta",
+      "descripcion": "Piscina y confort para toda la familia.",
+      "precio_noche": 130,
+      "imagen_url": "img/hoteles/oasis_1.jpeg"
     }
   ]
 }
