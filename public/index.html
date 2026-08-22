@@ -20,7 +20,7 @@
     /* HEADER */
     header {
       background: linear-gradient(rgba(5, 20, 15, 0.75), rgba(5, 15, 10, 0.85)), 
-                  url('img/hoteles/fondo-hotel.jpg') no-repeat center center;
+                  url('public/img/hoteles/fondo-hotel.jpg') no-repeat center center;
       background-size: cover;
       color: #ffffff;
       padding: 60px 20px 80px 20px;
@@ -160,6 +160,7 @@
       display: flex;
       flex-direction: column;
       animation: fadeIn 0.4s ease-in-out;
+      border: 1px solid #eef2f5;
     }
 
     @keyframes fadeIn {
@@ -172,17 +173,48 @@
       box-shadow: 0 8px 16px rgba(0,0,0,0.15);
     }
 
-    .card img {
+    /* CONTENEDOR DE GALERÍA/IMÁGENES */
+    .card-galeria {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      background: #000;
+    }
+
+    .card-galeria img {
       width: 100%;
       height: 200px;
       object-fit: cover;
+      display: block;
     }
+
+    .btn-galeria {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 50%;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .btn-galeria:hover {
+      background: #10b981;
+    }
+
+    .btn-prev { left: 8px; }
+    .btn-next { right: 8px; }
 
     .card-body {
       padding: 1.2rem;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      justify-content: space-between;
     }
 
     .card-title {
@@ -191,23 +223,61 @@
       margin-bottom: 0.5rem;
     }
 
+    .card-location {
+      font-size: 0.88rem;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+
     .card-desc {
       font-size: 0.95rem;
       color: #666;
       margin-bottom: 1rem;
       line-height: 1.4;
-      flex-grow: 1;
     }
 
-    .info-tag {
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 0.6rem;
+    }
+
+    .badge-entrada {
+      background-color: #fce4ec;
+      color: #d81b60;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .badge-epoca {
+      background-color: #e0f7fa;
+      color: #00838f;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .badge-precio {
       background-color: #e0f2f1;
       color: #004d40;
       font-size: 0.85rem;
       font-weight: bold;
       padding: 0.4rem 0.8rem;
       border-radius: 6px;
-      margin-bottom: 0.5rem;
       display: inline-block;
+    }
+
+    .extra-info {
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 0.4rem;
+      line-height: 1.3;
     }
 
     .card-btn {
@@ -239,7 +309,7 @@
     .splash-container {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: linear-gradient(rgba(10, 25, 20, 0.4), rgba(5, 15, 10, 0.6)), 
-                  url('img/hoteles/fondo-hotel.jpg') no-repeat center center;
+                  url('public/img/hoteles/fondo-hotel.jpg') no-repeat center center;
       background-size: cover;
       display: flex; justify-content: center; align-items: center;
       z-index: 9999;
@@ -353,8 +423,8 @@
     let listaHoteles = [];
     let categoriaActual = 'todos';
 
-    // Cargar datos directamente desde datos.json
-    fetch('../datos.json')
+    // Cargar datos ajustado a tu directorio actual
+    fetch('datos.json')
       .then(res => res.json())
       .then(data => {
         listaLugares = data.lugares || [];
@@ -362,7 +432,36 @@
         renderizarLugares(listaLugares);
         renderizarHoteles(listaHoteles);
       })
-      .catch(err => console.error('Error al cargar datos:', err));
+      .catch(err => {
+        // Fallback por si la estructura requiere la ruta previa
+        fetch('../datos.json')
+          .then(res => res.json())
+          .then(data => {
+            listaLugares = data.lugares || [];
+            listaHoteles = data.hoteles || [];
+            renderizarLugares(listaLugares);
+            renderizarHoteles(listaHoteles);
+          })
+          .catch(e => console.error('Error al cargar datos.json:', e));
+      });
+
+    function obtenerFotos(item) {
+      let fotos = [];
+      if (item.imagen_url) fotos.push(item.imagen_url);
+      if (item.imagen_url_2) fotos.push(item.imagen_url_2);
+      if (item.imagen) fotos.push(item.imagen);
+      
+      // Corregir la ruta si no tiene public/ adelante
+      return fotos.map(f => f.startsWith('public/') ? f : 'public/' + f);
+    }
+
+    function cambiarImagen(idImg, fotos, direccion) {
+      const imgElement = document.getElementById(idImg);
+      let indexActual = parseInt(imgElement.getAttribute('data-index') || '0');
+      indexActual = (indexActual + direccion + fotos.length) % fotos.length;
+      imgElement.src = fotos[indexActual];
+      imgElement.setAttribute('data-index', indexActual);
+    }
 
     function renderizarLugares(datos) {
       const container = document.getElementById('lugares-container');
@@ -371,22 +470,42 @@
         container.innerHTML = '<p>No se encontraron lugares coincidentes.</p>';
         return;
       }
-      datos.forEach(lugar => {
-        const epocaTexto = lugar.mejor_epoca || lugar.epoca;
+      datos.forEach((lugar, i) => {
+        const epocaTexto = lugar.mejor_epoca || lugar.epoca_recomendada || lugar.epoca || 'Todo el año';
+        
+        let precioEntrada = lugar.precio_entrada || lugar.entrada || 'Gratis';
+        if (precioEntrada === 0 || precioEntrada === '0' || precioEntrada === '0.00') {
+          precioEntrada = 'Gratis';
+        } else if (typeof precioEntrada === 'number' || (!precioEntrada.includes('BOB') && precioEntrada !== 'Gratis')) {
+          precioEntrada = precioEntrada + ' BOB';
+        }
+
+        const costos = lugar.costos_adicionales || lugar.costos || lugar.costo_adicional || '';
+        const fotos = obtenerFotos(lugar);
+        const imgId = `img-lugar-${i}`;
+
         container.innerHTML += `
           <div class="card">
-            <a href="${lugar.imagen_url}" target="_blank">
-              <img src="${lugar.imagen_url}" alt="${lugar.nombre}">
-            </a>
+            <div class="card-galeria">
+              <img id="${imgId}" src="${fotos[0]}" data-index="0" alt="${lugar.nombre}">
+              ${fotos.length > 1 ? `
+                <button class="btn-galeria btn-prev" onclick="cambiarImagen('${imgId}', ${JSON.stringify(fotos).replace(/"/g, '&quot;')}, -1)">❮</button>
+                <button class="btn-galeria btn-next" onclick="cambiarImagen('${imgId}', ${JSON.stringify(fotos).replace(/"/g, '&quot;')}, 1)">❯</button>
+              ` : ''}
+            </div>
             <div class="card-body">
-              <h3 class="card-title">${lugar.nombre}</h3>
-              <p class="card-desc">${lugar.descripcion || ''}</p>
               <div>
-                <span class="info-tag">🎟️ Entrada: ${lugar.precio_entrada == 0 || !lugar.precio_entrada ? 'Gratis' : lugar.precio_entrada + ' BOB'}</span>
-                ${epocaTexto ? `<span class="info-tag">🗓️ Época: ${epocaTexto}</span>` : ''}
+                <h3 class="card-title">${lugar.nombre}</h3>
+                <p class="card-desc">${lugar.descripcion || ''}</p>
               </div>
-              ${lugar.costos_adicionales ? `<p style="font-size:0.85rem; color:#777; margin-top:0.3rem;">💡 ${lugar.costos_adicionales}</p>` : ''}
-              <a href="${lugar.ubicacion_maps || 'https://maps.google.com'}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>
+              <div>
+                <div class="tags-container">
+                  <span class="badge-entrada">🎟️ Entrada: ${precioEntrada}</span>
+                  <span class="badge-epoca">🗓️ Época: ${epocaTexto}</span>
+                </div>
+                ${costos ? `<p class="extra-info">💡 ${costos}</p>` : ''}
+                <a href="${lugar.ubicacion_maps || lugar.maps_url || 'https://maps.google.com'}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>
+              </div>
             </div>
           </div>
         `;
@@ -400,23 +519,37 @@
         container.innerHTML = '<p>No se encontraron hoteles coincidentes.</p>';
         return;
       }
-      datos.forEach(hotel => {
+      datos.forEach((hotel, i) => {
         const direccionTexto = hotel.direccion || hotel.ubicacion || '';
+        const precio = hotel.precio_noche ? (hotel.precio_noche.toString().includes('BS') ? hotel.precio_noche : 'BS ' + hotel.precio_noche) : 'N/A';
+        const serviciosTexto = hotel.servicios || hotel.servicios_incluidos || '';
+        const contactoTexto = hotel.contacto || hotel.telefono || hotel.celular || '';
+        const fotos = obtenerFotos(hotel);
+        const imgId = `img-hotel-${i}`;
+
         container.innerHTML += `
           <div class="card">
-            <a href="${hotel.imagen_url}" target="_blank">
-              <img src="${hotel.imagen_url}" alt="${hotel.nombre}">
-            </a>
+            <div class="card-galeria">
+              <img id="${imgId}" src="${fotos[0]}" data-index="0" alt="${hotel.nombre}">
+              ${fotos.length > 1 ? `
+                <button class="btn-galeria btn-prev" onclick="cambiarImagen('${imgId}', ${JSON.stringify(fotos).replace(/"/g, '&quot;')}, -1)">❮</button>
+                <button class="btn-galeria btn-next" onclick="cambiarImagen('${imgId}', ${JSON.stringify(fotos).replace(/"/g, '&quot;')}, 1)">❯</button>
+              ` : ''}
+            </div>
             <div class="card-body">
-              <h3 class="card-title">${hotel.nombre}</h3>
-              ${direccionTexto ? `<p style="font-size:0.85rem; color:#555; margin-bottom:0.5rem;"><strong>Ubicación:</strong> ${direccionTexto}</p>` : ''}
-              ${hotel.descripcion ? `<p class="card-desc">${hotel.descripcion}</p>` : ''}
               <div>
-                <span class="info-tag">💰 Precio / Noche: BS ${hotel.precio_noche || 'N/A'}</span>
+                <h3 class="card-title">${hotel.nombre}</h3>
+                ${direccionTexto ? `<p class="card-location"><strong>Ubicación:</strong> ${direccionTexto}</p>` : ''}
+                ${hotel.descripcion ? `<p class="card-desc">${hotel.descripcion}</p>` : ''}
               </div>
-              ${hotel.servicios ? `<p style="font-size:0.85rem; color:#555; margin-top:0.5rem;">🛎️ <strong>Servicios:</strong> ${hotel.servicios}</p>` : ''}
-              ${hotel.contacto ? `<p style="font-size:0.85rem; color:#555; margin-top:0.3rem;">📞 <strong>Contacto:</strong> ${hotel.contacto}</p>` : ''}
-              <a href="${hotel.ubicacion_maps || 'https://maps.google.com'}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>
+              <div>
+                <div class="tags-container">
+                  <span class="badge-precio">💰 Precio / Noche: ${precio}</span>
+                </div>
+                ${serviciosTexto ? `<p class="extra-info">🔔 <strong>Servicios:</strong> ${serviciosTexto}</p>` : ''}
+                ${contactoTexto ? `<p class="extra-info">📞 <strong>Contacto:</strong> ${contactoTexto}</p>` : ''}
+                <a href="${hotel.ubicacion_maps || hotel.maps_url || 'https://maps.google.com'}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>
+              </div>
             </div>
           </div>
         `;
