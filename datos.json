@@ -5,14 +5,14 @@
       "nombre": "Costanera de Riberalta",
       "descripcion": "Hermosa vista al encuentro de los ríos Beni y Madre de Dios.",
       "precio_entrada": 0,
-      "imagen_url": "https://picsum.photos/id/1015/400/250"
+      "imagen_url": "img/hoteles/fondo-hotel.jpg"
     },
     {
       "id": 2,
       "nombre": "Plaza Principal 3 de Febrero",
       "descripcion": "El corazón de la ciudad, rodeado de vegetación y vida local.",
       "precio_entrada": 0,
-      "imagen_url": "https://picsum.photos/id/1029/400/250"
+      "imagen_url": "img/hoteles/fondo-hotel.jpg"
     }
   ],
   "hoteles": [
@@ -21,14 +21,14 @@
       "nombre": "Hotel Las Palmas",
       "descripcion": "Habitaciones confortables con piscina y aire acondicionado.",
       "precio_noche": 150,
-      "imagen_url": "https://picsum.photos/id/1040/400/250"
+      "imagen_url": "img/hoteles/fondo-hotel.jpg"
     },
     {
       "id": 2,
       "nombre": "Hostal El Amazónico",
       "descripcion": "Alojamiento céntrico y económico con excelente atención.",
       "precio_noche": 80,
-      "imagen_url": "https://picsum.photos/id/1069/400/250"
+      "imagen_url": "img/hoteles/fondo-hotel.jpg"
     }
   ]
 }
