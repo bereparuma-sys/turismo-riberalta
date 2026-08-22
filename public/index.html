@@ -355,8 +355,8 @@
     let listaHoteles = [];
     let categoriaActual = 'todos';
 
-    // Cargar Datos desde el archivo datos.json local
-    fetch('./datos.json')
+    // Apunta al archivo datos.json ubicado en la raíz del proyecto
+    fetch('../datos.json')
       .then(res => {
         if (!res.ok) throw new Error("No se encontró el archivo datos.json");
         return res.json();
