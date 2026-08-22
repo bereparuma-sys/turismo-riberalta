@@ -87,7 +87,6 @@
       border-color: #10b981;
     }
 
-    /* Botón para limpiar texto */
     .btn-clear {
       position: absolute;
       right: 12px;
@@ -105,7 +104,6 @@
       color: #ef4444;
     }
 
-    /* Botones de Categorías Rápida */
     .categorias-pills {
       display: flex;
       gap: 8px;
@@ -347,7 +345,7 @@
   </main>
 
   <footer>
-    <p>Guía de Turismo Riberalta &copy; 2026 - Datos Estáticos</p>
+    <p>Guía de Turismo Riberalta &copy; 2026</p>
   </footer>
 
   <script>
@@ -355,23 +353,16 @@
     let listaHoteles = [];
     let categoriaActual = 'todos';
 
-    // Apunta al archivo datos.json ubicado en la raíz del proyecto
+    // Cargar datos directamente desde datos.json
     fetch('../datos.json')
-      .then(res => {
-        if (!res.ok) throw new Error("No se encontró el archivo datos.json");
-        return res.json();
-      })
+      .then(res => res.json())
       .then(data => {
         listaLugares = data.lugares || [];
         listaHoteles = data.hoteles || [];
         renderizarLugares(listaLugares);
         renderizarHoteles(listaHoteles);
       })
-      .catch(err => {
-        console.error('Error al cargar datos:', err);
-        document.getElementById('lugares-container').innerHTML = '<p>Error al cargar lugares.</p>';
-        document.getElementById('hoteles-container').innerHTML = '<p>Error al cargar hoteles.</p>';
-      });
+      .catch(err => console.error('Error al cargar datos:', err));
 
     function renderizarLugares(datos) {
       const container = document.getElementById('lugares-container');
@@ -381,21 +372,20 @@
         return;
       }
       datos.forEach(lugar => {
-        const imgUrl = lugar.imagen_url || lugar.imagen || 'https://via.placeholder.com/300';
         container.innerHTML += `
           <div class="card">
-            <a href="${imgUrl}" target="_blank">
-              <img src="${imgUrl}" alt="${lugar.nombre}">
+            <a href="${lugar.imagen_url}" target="_blank">
+              <img src="${lugar.imagen_url}" alt="${lugar.nombre}">
             </a>
             <div class="card-body">
               <h3 class="card-title">${lugar.nombre}</h3>
-              <p class="card-desc">${lugar.descripcion || ''}</p>
+              <p class="card-desc">${lugar.descripcion}</p>
               <div>
                 <span class="info-tag">🎟️ Entrada: ${lugar.precio_entrada == 0 || !lugar.precio_entrada ? 'Gratis' : lugar.precio_entrada + ' BOB'}</span>
                 ${lugar.mejor_epoca ? `<span class="info-tag">🗓️ Época: ${lugar.mejor_epoca}</span>` : ''}
               </div>
               ${lugar.costos_adicionales ? `<p style="font-size:0.85rem; color:#777; margin-top:0.3rem;">💡 ${lugar.costos_adicionales}</p>` : ''}
-              ${lugar.ubicacion_maps ? `<a href="${lugar.ubicacion_maps}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>` : ''}
+              <a href="${lugar.ubicacion_maps || 'https://maps.google.com'}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>
             </div>
           </div>
         `;
@@ -410,21 +400,20 @@
         return;
       }
       datos.forEach(hotel => {
-        const imgUrl = hotel.imagen_url || hotel.imagen || 'https://via.placeholder.com/300';
         container.innerHTML += `
           <div class="card">
-            <a href="${imgUrl}" target="_blank">
-              <img src="${imgUrl}" alt="${hotel.nombre}">
+            <a href="${hotel.imagen_url}" target="_blank">
+              <img src="${hotel.imagen_url}" alt="${hotel.nombre}">
             </a>
             <div class="card-body">
               <h3 class="card-title">${hotel.nombre}</h3>
-              ${hotel.direccion ? `<p class="card-desc"><strong>Ubicación:</strong> ${hotel.direccion}</p>` : `<p class="card-desc">${hotel.descripcion || ''}</p>`}
+              <p class="card-desc">${hotel.descripcion || ''}</p>
               <div>
-                ${hotel.precio_noche ? `<span class="info-tag">💰 Precio / Noche: BS ${hotel.precio_noche}</span>` : ''}
+                <span class="info-tag">💰 Precio / Noche: BS ${hotel.precio_noche || 'N/A'}</span>
               </div>
               ${hotel.servicios ? `<p style="font-size:0.85rem; color:#555; margin-top:0.5rem;">🛎️ <strong>Servicios:</strong> ${hotel.servicios}</p>` : ''}
               ${hotel.contacto ? `<p style="font-size:0.85rem; color:#555; margin-top:0.3rem;">📞 <strong>Contacto:</strong> ${hotel.contacto}</p>` : ''}
-              ${hotel.ubicacion_maps ? `<a href="${hotel.ubicacion_maps}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>` : ''}
+              <a href="${hotel.ubicacion_maps || 'https://maps.google.com'}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>
             </div>
           </div>
         `;
@@ -439,14 +428,13 @@
       btnClear.style.display = texto.length > 0 ? 'block' : 'none';
 
       const lugaresFiltrados = listaLugares.filter(l => 
-        (l.nombre && l.nombre.toLowerCase().includes(texto)) || 
-        (l.descripcion && l.descripcion.toLowerCase().includes(texto))
+        l.nombre.toLowerCase().includes(texto) || 
+        l.descripcion.toLowerCase().includes(texto)
       );
 
       const hotelesFiltrados = listaHoteles.filter(h => 
-        (h.nombre && h.nombre.toLowerCase().includes(texto)) || 
-        (h.direccion && h.direccion.toLowerCase().includes(texto)) ||
-        (h.servicios && h.servicios.toLowerCase().includes(texto))
+        h.nombre.toLowerCase().includes(texto) || 
+        (h.descripcion && h.descripcion.toLowerCase().includes(texto))
       );
 
       renderizarLugares(lugaresFiltrados);
