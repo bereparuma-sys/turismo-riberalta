@@ -372,6 +372,7 @@
         return;
       }
       datos.forEach(lugar => {
+        const epocaTexto = lugar.mejor_epoca || lugar.epoca;
         container.innerHTML += `
           <div class="card">
             <a href="${lugar.imagen_url}" target="_blank">
@@ -379,10 +380,10 @@
             </a>
             <div class="card-body">
               <h3 class="card-title">${lugar.nombre}</h3>
-              <p class="card-desc">${lugar.descripcion}</p>
+              <p class="card-desc">${lugar.descripcion || ''}</p>
               <div>
                 <span class="info-tag">🎟️ Entrada: ${lugar.precio_entrada == 0 || !lugar.precio_entrada ? 'Gratis' : lugar.precio_entrada + ' BOB'}</span>
-                ${lugar.mejor_epoca ? `<span class="info-tag">🗓️ Época: ${lugar.mejor_epoca}</span>` : ''}
+                ${epocaTexto ? `<span class="info-tag">🗓️ Época: ${epocaTexto}</span>` : ''}
               </div>
               ${lugar.costos_adicionales ? `<p style="font-size:0.85rem; color:#777; margin-top:0.3rem;">💡 ${lugar.costos_adicionales}</p>` : ''}
               <a href="${lugar.ubicacion_maps || 'https://maps.google.com'}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>
@@ -400,6 +401,7 @@
         return;
       }
       datos.forEach(hotel => {
+        const direccionTexto = hotel.direccion || hotel.ubicacion || '';
         container.innerHTML += `
           <div class="card">
             <a href="${hotel.imagen_url}" target="_blank">
@@ -407,7 +409,8 @@
             </a>
             <div class="card-body">
               <h3 class="card-title">${hotel.nombre}</h3>
-              <p class="card-desc">${hotel.descripcion || ''}</p>
+              ${direccionTexto ? `<p style="font-size:0.85rem; color:#555; margin-bottom:0.5rem;"><strong>Ubicación:</strong> ${direccionTexto}</p>` : ''}
+              ${hotel.descripcion ? `<p class="card-desc">${hotel.descripcion}</p>` : ''}
               <div>
                 <span class="info-tag">💰 Precio / Noche: BS ${hotel.precio_noche || 'N/A'}</span>
               </div>
@@ -428,13 +431,15 @@
       btnClear.style.display = texto.length > 0 ? 'block' : 'none';
 
       const lugaresFiltrados = listaLugares.filter(l => 
-        l.nombre.toLowerCase().includes(texto) || 
-        l.descripcion.toLowerCase().includes(texto)
+        (l.nombre && l.nombre.toLowerCase().includes(texto)) || 
+        (l.descripcion && l.descripcion.toLowerCase().includes(texto))
       );
 
       const hotelesFiltrados = listaHoteles.filter(h => 
-        h.nombre.toLowerCase().includes(texto) || 
-        (h.descripcion && h.descripcion.toLowerCase().includes(texto))
+        (h.nombre && h.nombre.toLowerCase().includes(texto)) || 
+        (h.descripcion && h.descripcion.toLowerCase().includes(texto)) ||
+        (h.direccion && h.direccion.toLowerCase().includes(texto)) ||
+        (h.servicios && h.servicios.toLowerCase().includes(texto))
       );
 
       renderizarLugares(lugaresFiltrados);
