@@ -347,7 +347,7 @@
   </main>
 
   <footer>
-    <p>Guía de Turismo Riberalta &copy; 2026 - Conectado con PostgreSQL & Express</p>
+    <p>Guía de Turismo Riberalta &copy; 2026 - Datos Estáticos</p>
   </footer>
 
   <script>
@@ -355,46 +355,47 @@
     let listaHoteles = [];
     let categoriaActual = 'todos';
 
-    // Cargar Lugares
-    fetch('http://localhost:3000/api/lugares')
-      .then(res => res.json())
-      .then(data => {
-        listaLugares = data;
-        renderizarLugares(listaLugares);
+    // Cargar Datos desde el archivo datos.json local
+    fetch('./datos.json')
+      .then(res => {
+        if (!res.ok) throw new Error("No se encontró el archivo datos.json");
+        return res.json();
       })
-      .catch(err => console.error('Error al cargar lugares:', err));
-
-    // Cargar Hoteles
-    fetch('http://localhost:3000/api/hoteles')
-      .then(res => res.json())
       .then(data => {
-        listaHoteles = data;
+        listaLugares = data.lugares || [];
+        listaHoteles = data.hoteles || [];
+        renderizarLugares(listaLugares);
         renderizarHoteles(listaHoteles);
       })
-      .catch(err => console.error('Error al cargar hoteles:', err));
+      .catch(err => {
+        console.error('Error al cargar datos:', err);
+        document.getElementById('lugares-container').innerHTML = '<p>Error al cargar lugares.</p>';
+        document.getElementById('hoteles-container').innerHTML = '<p>Error al cargar hoteles.</p>';
+      });
 
     function renderizarLugares(datos) {
       const container = document.getElementById('lugares-container');
       container.innerHTML = '';
-      if(datos.length === 0) {
+      if(!datos || datos.length === 0) {
         container.innerHTML = '<p>No se encontraron lugares coincidentes.</p>';
         return;
       }
       datos.forEach(lugar => {
+        const imgUrl = lugar.imagen_url || lugar.imagen || 'https://via.placeholder.com/300';
         container.innerHTML += `
           <div class="card">
-            <a href="${lugar.imagen_url.replace('_1.jpg', '_2.jpg').replace('_1.jpeg', '_2.jpeg')}" target="_blank">
-              <img src="${lugar.imagen_url}" alt="${lugar.nombre}" style="width: 100%; height: 200px; object-fit: cover; cursor: pointer;">
+            <a href="${imgUrl}" target="_blank">
+              <img src="${imgUrl}" alt="${lugar.nombre}">
             </a>
             <div class="card-body">
               <h3 class="card-title">${lugar.nombre}</h3>
-              <p class="card-desc">${lugar.descripcion}</p>
+              <p class="card-desc">${lugar.descripcion || ''}</p>
               <div>
-                <span class="info-tag">🎟️ Entrada: ${lugar.precio_entrada == 0 ? 'Gratis' : lugar.precio_entrada + ' BOB'}</span>
-                <span class="info-tag">🗓️ Época: ${lugar.mejor_epoca}</span>
+                <span class="info-tag">🎟️ Entrada: ${lugar.precio_entrada == 0 || !lugar.precio_entrada ? 'Gratis' : lugar.precio_entrada + ' BOB'}</span>
+                ${lugar.mejor_epoca ? `<span class="info-tag">🗓️ Época: ${lugar.mejor_epoca}</span>` : ''}
               </div>
               ${lugar.costos_adicionales ? `<p style="font-size:0.85rem; color:#777; margin-top:0.3rem;">💡 ${lugar.costos_adicionales}</p>` : ''}
-              <a href="${lugar.ubicacion_maps}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>
+              ${lugar.ubicacion_maps ? `<a href="${lugar.ubicacion_maps}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>` : ''}
             </div>
           </div>
         `;
@@ -404,24 +405,25 @@
     function renderizarHoteles(datos) {
       const container = document.getElementById('hoteles-container');
       container.innerHTML = '';
-      if(datos.length === 0) {
+      if(!datos || datos.length === 0) {
         container.innerHTML = '<p>No se encontraron hoteles coincidentes.</p>';
         return;
       }
       datos.forEach(hotel => {
+        const imgUrl = hotel.imagen_url || hotel.imagen || 'https://via.placeholder.com/300';
         container.innerHTML += `
           <div class="card">
-            <a href="${hotel.imagen_url.replace('_1.jpeg', '_2.jpeg').replace('_1.jpg', '_2.jpg')}" target="_blank">
-              <img src="${hotel.imagen_url}" alt="${hotel.nombre}" style="width: 100%; height: 200px; object-fit: cover; cursor: pointer;">
+            <a href="${imgUrl}" target="_blank">
+              <img src="${imgUrl}" alt="${hotel.nombre}">
             </a>
             <div class="card-body">
               <h3 class="card-title">${hotel.nombre}</h3>
-              <p class="card-desc"><strong>Ubicación:</strong> ${hotel.direccion}</p>
+              ${hotel.direccion ? `<p class="card-desc"><strong>Ubicación:</strong> ${hotel.direccion}</p>` : `<p class="card-desc">${hotel.descripcion || ''}</p>`}
               <div>
-                <span class="info-tag">💰 Precio / Noche: BS ${hotel.precio_noche}</span>
+                ${hotel.precio_noche ? `<span class="info-tag">💰 Precio / Noche: BS ${hotel.precio_noche}</span>` : ''}
               </div>
-              <p style="font-size:0.85rem; color:#555; margin-top:0.5rem;">🛎️ <strong>Servicios:</strong> ${hotel.servicios}</p>
-              <p style="font-size:0.85rem; color:#555; margin-top:0.3rem;">📞 <strong>Contacto:</strong> ${hotel.contacto}</p>
+              ${hotel.servicios ? `<p style="font-size:0.85rem; color:#555; margin-top:0.5rem;">🛎️ <strong>Servicios:</strong> ${hotel.servicios}</p>` : ''}
+              ${hotel.contacto ? `<p style="font-size:0.85rem; color:#555; margin-top:0.3rem;">📞 <strong>Contacto:</strong> ${hotel.contacto}</p>` : ''}
               ${hotel.ubicacion_maps ? `<a href="${hotel.ubicacion_maps}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>` : ''}
             </div>
           </div>
@@ -437,13 +439,13 @@
       btnClear.style.display = texto.length > 0 ? 'block' : 'none';
 
       const lugaresFiltrados = listaLugares.filter(l => 
-        l.nombre.toLowerCase().includes(texto) || 
-        l.descripcion.toLowerCase().includes(texto)
+        (l.nombre && l.nombre.toLowerCase().includes(texto)) || 
+        (l.descripcion && l.descripcion.toLowerCase().includes(texto))
       );
 
       const hotelesFiltrados = listaHoteles.filter(h => 
-        h.nombre.toLowerCase().includes(texto) || 
-        h.direccion.toLowerCase().includes(texto) ||
+        (h.nombre && h.nombre.toLowerCase().includes(texto)) || 
+        (h.direccion && h.direccion.toLowerCase().includes(texto)) ||
         (h.servicios && h.servicios.toLowerCase().includes(texto))
       );
 
