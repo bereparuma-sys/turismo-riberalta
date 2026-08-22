@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Turística de Riberalta</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f4f7f6;
+      color: #333;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(rgba(5, 20, 15, 0.75), rgba(5, 15, 10, 0.85)), 
+                  url('img/hoteles/fondo-hotel.jpg') no-repeat center center;
+      background-size: cover;
+      color: #ffffff;
+      padding: 60px 20px 80px 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      border-bottom: 5px solid #10b981;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin: 0 0 10px 0;
+      color: #ffffff;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 0 25px #00e676;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      color: #f1f5f9;
+      margin: 0 auto;
+      font-weight: 400;
+      max-width: 800px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+    }
+
+    /* BARRA DE BÚSQUEDA Y FILTROS */
+    .contenedor-filtros {
+      max-width: 1200px;
+      margin: 15px auto 2rem auto;
+      background: #ffffff;
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 10;
+    }
+
+    .grupo-busqueda {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
+
+    .grupo-busqueda input {
+      width: 100%;
+      padding: 12px 40px 12px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .grupo-busqueda input:focus {
+      border-color: #10b981;
+    }
+
+    /* Botón para limpiar texto */
+    .btn-clear {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      color: #94a3b8;
+      cursor: pointer;
+      display: none;
+    }
+
+    .btn-clear:hover {
+      color: #ef4444;
+    }
+
+    /* Botones de Categorías Rápida */
+    .categorias-pills {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pill {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pill:hover, .pill.active {
+      background: #10b981;
+      color: white;
+      border-color: #10b981;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 1rem auto 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      color: #004d40;
+      border-bottom: 3px solid #26a69a;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      color: #00796b;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      color: #666;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+      flex-grow: 1;
+    }
+
+    .info-tag {
+      background-color: #e0f2f1;
+      color: #004d40;
+      font-size: 0.85rem;
+      font-weight: bold;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    .card-btn {
+      display: block;
+      text-align: center;
+      background-color: #00796b;
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem;
+      border-radius: 6px;
+      font-weight: bold;
+      margin-top: 1rem;
+      transition: background 0.2s;
+    }
+
+    .card-btn:hover {
+      background-color: #004d40;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background-color: #004d40;
+      color: white;
+      margin-top: 2rem;
+    }
+
+    /* PANTALLA BIENVENIDA */
+    .splash-container {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(rgba(10, 25, 20, 0.4), rgba(5, 15, 10, 0.6)), 
+                  url('img/hoteles/fondo-hotel.jpg') no-repeat center center;
+      background-size: cover;
+      display: flex; justify-content: center; align-items: center;
+      z-index: 9999;
+      transition: all 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .splash-glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 50px 40px; border-radius: 24px; text-align: center;
+      max-width: 550px; width: 90%; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+      color: white;
+      animation: zoomIn 0.8s ease-out;
+    }
+
+    .badge { background: #20c997; color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
+    
+    .splash-glass-card h1 { 
+      font-size: 2.8rem; 
+      margin: 20px 0 15px 0; 
+      font-weight: 800; 
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 0 25px #00e676; 
+    }
+    
+    .splash-glass-card p { 
+      font-size: 1.05rem; 
+      margin-bottom: 35px; 
+      color: #f1f5f9; 
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8); 
+    }
+
+    .btn-explorar {
+      display: inline-flex; align-items: center; gap: 10px; background: #10b981; color: white; border: none;
+      padding: 14px 32px; font-size: 1.1rem; font-weight: bold; border-radius: 50px; cursor: pointer;
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); transition: all 0.3s ease;
+    }
+
+    .btn-explorar:hover { background: #059669; transform: translateY(-3px); }
+    @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  </style>
+</head>
+<body>
+
+  <!-- Pantalla de Bienvenida -->
+  <div id="welcome-screen" class="splash-container">
+    <div class="splash-glass-card">
+        <span class="badge">🌴 Descubre la Amazonía</span>
+        <h1>Guía Turística de Riberalta</h1>
+        <p>Explora los mejores paisajes, ríos, hoteles y rinconadas ocultas con navegación exacta integrada.</p>
+        <button class="btn-explorar" onclick="entrarSitio()">
+            <span>Explorar Guía</span>
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </button>
+    </div>
+  </div>
+
+  <script>
+    function entrarSitio() {
+        const splash = document.getElementById('welcome-screen');
+        splash.style.opacity = '0';
+        splash.style.visibility = 'hidden';
+        setTimeout(() => { splash.remove(); }, 800);
+    }
+  </script>
+
+  <!-- Header -->
+  <header>
+    <h1>🌿 Guía Turística de Riberalta</h1>
+    <p>Descubre los mejores destinos y alojamientos en la Amazonía Boliviana</p>
+  </header>
+
+  <!-- Filtro Interactivo -->
+  <div class="contenedor-filtros">
+    <div class="grupo-busqueda">
+      <input type="text" id="inputBuscar" placeholder="🔍 Buscar por nombre, servicio, ubicación..." onkeyup="filtrarEnTiempoReal()">
+      <button id="btnClear" class="btn-clear" onclick="limpiarBusqueda()">✖</button>
+    </div>
+    <div class="categorias-pills">
+      <button class="pill active" onclick="filtrarCategoria('todos', this)">Todos</button>
+      <button class="pill" onclick="filtrarCategoria('lugares', this)">Lugares</button>
+      <button class="pill" onclick="filtrarCategoria('hoteles', this)">Hoteles</button>
+    </div>
+  </div>
+
+  <main>
+    <!-- SECCIÓN LUGARES -->
+    <section id="sec-lugares">
+      <h2>Lugares Turísticos</h2>
+      <div id="lugares-container" class="grid">
+        <p>Cargando lugares...</p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN HOTELES -->
+    <section id="sec-hoteles">
+      <h2>Hoteles y Hospedaje</h2>
+      <div id="hoteles-container" class="grid">
+        <p>Cargando hoteles...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Guía de Turismo Riberalta &copy; 2026 - Conectado con PostgreSQL & Express</p>
+  </footer>
+
+  <script>
+    let listaLugares = [];
+    let listaHoteles = [];
+    let categoriaActual = 'todos';
+
+    // Cargar Lugares
+    fetch('http://localhost:3000/api/lugares')
+      .then(res => res.json())
+      .then(data => {
+        listaLugares = data;
+        renderizarLugares(listaLugares);
+      })
+      .catch(err => console.error('Error al cargar lugares:', err));
+
+    // Cargar Hoteles
+    fetch('http://localhost:3000/api/hoteles')
+      .then(res => res.json())
+      .then(data => {
+        listaHoteles = data;
+        renderizarHoteles(listaHoteles);
+      })
+      .catch(err => console.error('Error al cargar hoteles:', err));
+
+    function renderizarLugares(datos) {
+      const container = document.getElementById('lugares-container');
+      container.innerHTML = '';
+      if(datos.length === 0) {
+        container.innerHTML = '<p>No se encontraron lugares coincidentes.</p>';
+        return;
+      }
+      datos.forEach(lugar => {
+        container.innerHTML += `
+          <div class="card">
+            <a href="${lugar.imagen_url.replace('_1.jpg', '_2.jpg').replace('_1.jpeg', '_2.jpeg')}" target="_blank">
+              <img src="${lugar.imagen_url}" alt="${lugar.nombre}" style="width: 100%; height: 200px; object-fit: cover; cursor: pointer;">
+            </a>
+            <div class="card-body">
+              <h3 class="card-title">${lugar.nombre}</h3>
+              <p class="card-desc">${lugar.descripcion}</p>
+              <div>
+                <span class="info-tag">🎟️ Entrada: ${lugar.precio_entrada == 0 ? 'Gratis' : lugar.precio_entrada + ' BOB'}</span>
+                <span class="info-tag">🗓️ Época: ${lugar.mejor_epoca}</span>
+              </div>
+              ${lugar.costos_adicionales ? `<p style="font-size:0.85rem; color:#777; margin-top:0.3rem;">💡 ${lugar.costos_adicionales}</p>` : ''}
+              <a href="${lugar.ubicacion_maps}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderizarHoteles(datos) {
+      const container = document.getElementById('hoteles-container');
+      container.innerHTML = '';
+      if(datos.length === 0) {
+        container.innerHTML = '<p>No se encontraron hoteles coincidentes.</p>';
+        return;
+      }
+      datos.forEach(hotel => {
+        container.innerHTML += `
+          <div class="card">
+            <a href="${hotel.imagen_url.replace('_1.jpeg', '_2.jpeg').replace('_1.jpg', '_2.jpg')}" target="_blank">
+              <img src="${hotel.imagen_url}" alt="${hotel.nombre}" style="width: 100%; height: 200px; object-fit: cover; cursor: pointer;">
+            </a>
+            <div class="card-body">
+              <h3 class="card-title">${hotel.nombre}</h3>
+              <p class="card-desc"><strong>Ubicación:</strong> ${hotel.direccion}</p>
+              <div>
+                <span class="info-tag">💰 Precio / Noche: BS ${hotel.precio_noche}</span>
+              </div>
+              <p style="font-size:0.85rem; color:#555; margin-top:0.5rem;">🛎️ <strong>Servicios:</strong> ${hotel.servicios}</p>
+              <p style="font-size:0.85rem; color:#555; margin-top:0.3rem;">📞 <strong>Contacto:</strong> ${hotel.contacto}</p>
+              ${hotel.ubicacion_maps ? `<a href="${hotel.ubicacion_maps}" target="_blank" class="card-btn">📍 Ver en Google Maps</a>` : ''}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function filtrarEnTiempoReal() {
+      const input = document.getElementById('inputBuscar');
+      const btnClear = document.getElementById('btnClear');
+      const texto = input.value.toLowerCase();
+
+      btnClear.style.display = texto.length > 0 ? 'block' : 'none';
+
+      const lugaresFiltrados = listaLugares.filter(l => 
+        l.nombre.toLowerCase().includes(texto) || 
+        l.descripcion.toLowerCase().includes(texto)
+      );
+
+      const hotelesFiltrados = listaHoteles.filter(h => 
+        h.nombre.toLowerCase().includes(texto) || 
+        h.direccion.toLowerCase().includes(texto) ||
+        (h.servicios && h.servicios.toLowerCase().includes(texto))
+      );
+
+      renderizarLugares(lugaresFiltrados);
+      renderizarHoteles(hotelesFiltrados);
+    }
+
+    function limpiarBusqueda() {
+      const input = document.getElementById('inputBuscar');
+      input.value = '';
+      filtrarEnTiempoReal();
+    }
+
+    function filtrarCategoria(cat, btn) {
+      categoriaActual = cat;
+      document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const secLugares = document.getElementById('sec-lugares');
+      const secHoteles = document.getElementById('sec-hoteles');
+
+      if (cat === 'todos') {
+        secLugares.style.display = 'block';
+        secHoteles.style.display = 'block';
+      } else if (cat === 'lugares') {
+        secLugares.style.display = 'block';
+        secHoteles.style.display = 'none';
+      } else if (cat === 'hoteles') {
+        secLugares.style.display = 'none';
+        secHoteles.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
